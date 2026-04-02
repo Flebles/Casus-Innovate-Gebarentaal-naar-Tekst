@@ -1,21 +1,22 @@
-# Hand Tracker (MediaPipe + OpenCV)
+# Webcam Hand Tracker (OpenCV + MediaPipe)
 
-A real-time hand tracking app using your webcam.
+This app starts your webcam immediately and shows real-time hand landmarks.
 
-## What it does
+## Features
 
+- Starts webcam directly (no voice command needed)
 - Detects up to 2 hands (configurable)
 - Draws hand landmarks and connections
-- Shows left/right handedness labels
-- Adds simple gesture labels like fist, open palm, pointing, and peace
-- Shows current FPS
-- Saves a snapshot when you press `s`
+- Shows left/right hand labels
+- Saves a snapshot with `s`
+- Quits with `q`
 
 ## Setup (Windows PowerShell)
 
 ```powershell
 cd "C:\Users\noort\OneDrive\Documenten\GitHub\Casus-Innovate-Gebarentaal-naar-Tekst"
 .\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -25,19 +26,19 @@ pip install -r requirements.txt
 python .\CameraControl.py
 ```
 
-## Optional arguments
+## Useful options
 
 ```powershell
 python .\CameraControl.py --camera-index 0 --max-num-hands 2 --min-detection 0.6 --min-tracking 0.5 --snapshot-dir snapshots
 ```
 
-## Controls
+## Quick check
 
-- `s`: Save snapshot
-- `q`: Quit
+```powershell
+python .\CameraControl.py --help
+```
 
 ## Notes
 
-- If no window appears, check camera permissions in Windows privacy settings.
-- If your camera is not the default one, try another `--camera-index` like `1` or `2`.
-
+- If no webcam window appears, check Windows camera permissions.
+- If your camera is not the default one, try `--camera-index 1` or `--camera-index 2`.
