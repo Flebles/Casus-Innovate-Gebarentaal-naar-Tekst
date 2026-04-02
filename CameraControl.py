@@ -2,10 +2,9 @@ import argparse
 import os
 import time
 import uuid
-import cv2
 import mediapipe as mp
 import numpy as np
-
+import cv2 as cv
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(description="Real-time hand tracker with MediaPipe + OpenCV")
@@ -23,29 +22,66 @@ def parse_args() -> argparse.Namespace:
 
 
 def save_snapshot(frame: np.ndarray, output_dir: str) -> str:
+	if cv is None:
+		raise RuntimeError("OpenCV is required to save snapshots.")
 	os.makedirs(output_dir, exist_ok=True)
 	filename = f"{uuid.uuid4().hex}.png"
 	filepath = os.path.join(output_dir, filename)
-	cv2.imwrite(filepath, frame)
+	cv.imwrite(filepath, frame)
 	return filepath
 
 
-def draw_hand_center(frame: np.ndarray, landmarks, frame_width: int, frame_height: int) -> None:
+def draw_hand_center(frame: object, landmarks, frame_width: int, frame_height: int) -> None:
+	if cv is None:
+		raise RuntimeError("OpenCV is required to draw on frames.")
+	if np is None:
+		raise RuntimeError("NumPy is required to draw hand centers.")
 	points = np.array([(lm.x * frame_width, lm.y * frame_height) for lm in landmarks.landmark])
 	center = points.mean(axis=0).astype(int)
-	cv2.circle(frame, tuple(center), 6, (0, 255, 255), -1)
+	cv.circle(frame, tuple(center), 6, (0, 255, 255), -1)  # type: ignore[arg-type]
+
+
+def classify_hand_gesture(hand_landmarks, handedness: str | None = None) -> str:
+	landmark = hand_landmarks.landmark
+
+	index_extended = landmark[8].y < landmark[6].y
+	middle_extended = landmark[12].y < landmark[10].y
+	ring_extended = landmark[16].y < landmark[14].y
+	pinky_extended = landmark[20].y < landmark[18].y
+
+	if handedness == "Right":
+		thumb_extended = landmark[4].x > landmark[3].x
+	elif handedness == "Left":
+		thumb_extended = landmark[4].x < landmark[3].x
+	else:
+		thumb_extended = abs(landmark[4].x - landmark[3].x) > 0.03
+
+	extended_fingers = [thumb_extended, index_extended, middle_extended, ring_extended, pinky_extended]
+	count = sum(extended_fingers)
+
+	if count == 0:
+		return "Fist"
+	if count == 5:
+		return "Open Palm"
+	if index_extended and not middle_extended and not ring_extended and not pinky_extended:
+		return "Pointing"
+	if index_extended and middle_extended and not ring_extended and not pinky_extended:
+		return "Peace"
+	return f"{count} Fingers"
 
 
 def main() -> None:
-	args = parse_args()
+	if cv is None:
+		raise RuntimeError("OpenCV is not installed. Install requirements.txt first.")
 
-	cap = cv2.VideoCapture(args.camera_index)
+	args = parse_args()
+	mp_styles = mp.solutions.drawing_styles
+	mp_drawing = mp.solutions.drawing_utils
+	mp_hands = mp.solutions.hands
+
+	cap = cv.VideoCapture(args.camera_index)
 	if not cap.isOpened():
 		raise RuntimeError("Could not open camera. Try another --camera-index.")
-
-	mp_hands = mp.solutions.hands
-	mp_drawing = mp.solutions.drawing_utils
-	mp_styles = mp.solutions.drawing_styles
 
 	previous_time = time.time()
 
@@ -61,10 +97,10 @@ def main() -> None:
 				print("Camera frame could not be read.")
 				break
 
-			frame = cv2.flip(frame, 1)
+			frame = cv.flip(frame, 1)
 			frame_height, frame_width = frame.shape[:2]
 
-			rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+			rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 			rgb.flags.writeable = False
 			results = hands.process(rgb)
 			rgb.flags.writeable = True
@@ -73,6 +109,10 @@ def main() -> None:
 			if results.multi_hand_landmarks:
 				for idx, hand_landmarks in enumerate(results.multi_hand_landmarks):
 					tracked_hands += 1
+					handedness = None
+					if results.multi_handedness and idx < len(results.multi_handedness):
+						handedness = results.multi_handedness[idx].classification[0].label
+					gesture = classify_hand_gesture(hand_landmarks, handedness)
 					mp_drawing.draw_landmarks(
 						frame,
 						hand_landmarks,
@@ -82,40 +122,53 @@ def main() -> None:
 					)
 					draw_hand_center(frame, hand_landmarks, frame_width, frame_height)
 
-					if results.multi_handedness and idx < len(results.multi_handedness):
-						handedness = results.multi_handedness[idx].classification[0].label
+					if handedness:
 						label_pos = hand_landmarks.landmark[0]
 						x = int(label_pos.x * frame_width)
 						y = int(label_pos.y * frame_height) - 10
-						cv2.putText(
+						cv.putText(
 							frame,
-							handedness,
+							f"{handedness}: {gesture}",
 							(x, max(20, y)),
-							cv2.FONT_HERSHEY_SIMPLEX,
+										cv.FONT_HERSHEY_SIMPLEX,
 							0.7,
 							(255, 255, 255),
 							2,
-							cv2.LINE_AA,
+										cv.LINE_AA,
+						)
+					else:
+						label_pos = hand_landmarks.landmark[0]
+						x = int(label_pos.x * frame_width)
+						y = int(label_pos.y * frame_height) - 10
+						cv.putText(
+							frame,
+							gesture,
+							(x, max(20, y)),
+										cv.FONT_HERSHEY_SIMPLEX,
+							0.7,
+							(255, 255, 255),
+							2,
+										cv.LINE_AA,
 						)
 
 			current_time = time.time()
 			fps = 1.0 / max(current_time - previous_time, 1e-6)
 			previous_time = current_time
 
-			cv2.putText(frame, f"Hands: {tracked_hands}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (50, 220, 50), 2)
-			cv2.putText(frame, f"FPS: {fps:.1f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (50, 220, 50), 2)
-			cv2.putText(
+			cv.putText(frame, f"Hands: {tracked_hands}", (10, 30), cv.FONT_HERSHEY_SIMPLEX, 0.8, (50, 220, 50), 2)
+			cv.putText(frame, f"FPS: {fps:.1f}", (10, 60), cv.FONT_HERSHEY_SIMPLEX, 0.8, (50, 220, 50), 2)
+			cv.putText(
 				frame,
 				"Press 's' to save snapshot, 'q' to quit",
 				(10, frame_height - 10),
-				cv2.FONT_HERSHEY_SIMPLEX,
+				cv.FONT_HERSHEY_SIMPLEX,
 				0.6,
 				(240, 240, 240),
 				2,
 			)
 
-			cv2.imshow("Hand Tracker", frame)
-			key = cv2.waitKey(1) & 0xFF
+			cv.imshow("Hand Tracker", frame)
+			key = cv.waitKey(1) & 0xFF
 
 			if key == ord("s"):
 				saved = save_snapshot(frame, args.snapshot_dir)
@@ -124,7 +177,7 @@ def main() -> None:
 				break
 
 	cap.release()
-	cv2.destroyAllWindows()
+	cv.destroyAllWindows()
 
 
 if __name__ == "__main__":

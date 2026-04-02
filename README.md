@@ -7,6 +7,7 @@ A real-time hand tracking app using your webcam.
 - Detects up to 2 hands (configurable)
 - Draws hand landmarks and connections
 - Shows left/right handedness labels
+- Adds simple gesture labels like fist, open palm, pointing, and peace
 - Shows current FPS
 - Saves a snapshot when you press `s`
 
