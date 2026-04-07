@@ -1,11 +1,14 @@
 # Webcam Hand Tracker: Sign Language Recognition Demonstrator
 ## Gebarentaal naar Tekst (Sign Language to Text)
 
-A real-time hand gesture recognition application using OpenCV and MediaPipe to detect and track hand landmarks. Built as a demonstrator for Zuyd Hogeschool's Data Intelligence department to showcase AI applications in sign language translation.
+A real-time hand gesture recognition application using OpenCV and MediaPipe to detect and track hand landmarks in real-time. Built as a demonstrator for Zuyd Hogeschool's Lectorate Data Intelligence to showcase AI applications in gesture and sign language recognition.
 
 ### Project Information
 
+**Institution:** Zuyd Hogeschool - Lectorate Data Intelligence  
 **Case Group:** TiMMU  
+**Academic Year:** 2025-2026
+
 **Team Members:**
 - Roy Teheux (2506589)
 - Bram Noortman (2507422)
@@ -13,44 +16,59 @@ A real-time hand gesture recognition application using OpenCV and MediaPipe to d
 - Tim Smeets (2506878)
 - Milan Schoenmakers (2502547)
 
-**Purpose:** Educational demonstrator for open days and public events to show how AI can be applied to make sign language accessible.
+**Purpose:** Create an accessible, beginner-friendly demonstrator that showcases how AI and computer vision can be applied to recognize and interpret gesture and sign language. Designed for open days and public events at Zuyd Hogeschool.
 
 ## Features
 
-- 🎥 Starts webcam directly (no voice command needed)
-- 🖐️ Detects up to 2 hands (configurable)
-- 📍 Draws hand landmarks and connections in real-time
-- 🏷️ Shows left/right hand labels
-- 📸 Saves a snapshot with `s`
-- ❌ Quits with `q`
+- 🎥 Real-time webcam hand tracking
+- 🖐️ Detects up to 2 hands simultaneously (configurable to 1)
+- 📍 Draws 21 hand landmarks and connections per hand
+- 🔄 Smooth real-time processing (~30 FPS)
+- 📸 Capture snapshots with `s` key
 - ⚙️ Highly configurable detection parameters
+- 🎯 Optimized for CPU and GPU processing
+- ❌ Clean exit with `q` key
 
 ## Requirements
 
-- Python 3.8+
-- Windows PowerShell (or terminal of your choice)
-- Webcam
-- 4GB+ RAM recommended
-- GPU optional but recommended for better performance
+**Minimum:**
+- Python 3.10+
+- Windows 11 (or Linux/macOS)
+- 4GB RAM
+- Webcam (minimum 640x480 resolution)
 
-## Setup (Windows PowerShell)
+**Recommended:**
+- Python 3.13+
+- 8GB+ RAM
+- GPU (CUDA-compatible for acceleration)
+- Webcam with 30+ FPS
 
-### 1. Navigate to project directory
+## Installation
+
+### 1. Clone or download the repository
 ```powershell
-cd "C:\Users\Bram\PycharmProjects\Casus-Innovate-Gebarentaal-naar-Tekst"
+cd "C:\Users\[YourUsername]\Documents"
+git clone [repository-url]
+cd Casus-Innovate-Gebarentaal-naar-Tekst
 ```
 
-### 2. Create and activate virtual environment (if not already done)
+### 2. Create virtual environment
 ```powershell
 python -m venv .venv
+```
+
+### 3. Activate virtual environment
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+### 4. Install dependencies
 ```powershell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+This will automatically download the MediaPipe hand landmarker model on first run.
 
 ## Running the Application
 
@@ -87,6 +105,16 @@ python CameraControls.py --camera-index 0 --max-num-hands 2 --min-detection 0.6 
 python CameraControls.py --help
 ```
 
+## Testing & Documentation
+
+Detailed test results and system validation can be found in:
+- **TEST_RAPPORT.txt** - Comprehensive test report with 10 test cases (100% passing)
+  - Installation validation
+  - Functionality testing
+  - Performance benchmarks
+  - System stability checks
+  - Troubleshooting guide
+
 ## Troubleshooting
 
 ### No webcam window appears
@@ -115,10 +143,11 @@ python CameraControls.py --camera-index 1
 
 ## Technical Stack
 
-- **Python 3.8+** - Programming language
-- **OpenCV** - Computer vision library
-- **MediaPipe** - Hand detection and landmark tracking
+- **Python 3.13** - Programming language
+- **OpenCV 4.8.1.78** - Computer vision library for video capture and processing
+- **MediaPipe 0.10.33** - Hand detection and landmark tracking
 - **NumPy** - Numerical computations
+- **TensorFlow Lite** - Optimized inference for real-time processing
 
 ## Project Background
 
@@ -127,15 +156,15 @@ This project is part of the "Casus Innovate" initiative at Zuyd Hogeschool's Dat
 - Makes sign language accessibility technology understandable to the public
 - Demonstrates both capabilities and limitations of current AI technology
 - Serves as an educational tool for open days and public events
+- Focuses on Dutch Sign Language (Nederlandse Gebarentaal - NGT)
 
-## Research & References
+### Research Foundation
 
-The project is built on extensive research into sign language recognition, computer vision, and AI/ML frameworks. Key technologies include:
-- **Pose Estimation** for extracting hand keypoints
-- **Deep Learning Models** for gesture classification
-- **Real-time Processing** for live video analysis
-
-For detailed research findings, see the project documentation and bibliography.
+The project is built on extensive research into sign language recognition, computer vision, and AI/ML frameworks. Key concepts include:
+- **Pose Estimation** for extracting hand keypoints (21 landmarks per hand)
+- **MediaPipe Solutions** for real-time hand tracking
+- **Real-time Processing** for live video analysis with minimal latency
+- **Accessibility-first Design** for inclusive technology demonstration
 
 ## Notes
 
@@ -146,11 +175,16 @@ For detailed research findings, see the project documentation and bibliography.
 
 ## Future Enhancements
 
-- Gesture classification and translation
+**Phase 2 - Gesture Recognition:**
+- Gesture classification and pattern recognition
 - Database of recognized sign language gestures
-- Real-time text output
+- Real-time text output with confidence scores
+
+**Phase 3 - Advanced Features:**
 - Recording and playback functionality
 - Multi-language sign language support
+- Performance optimization with GPU acceleration
+- Explainability features for educational purposes
 
 ## License
 

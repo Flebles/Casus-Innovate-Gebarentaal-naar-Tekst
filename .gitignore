@@ -48,6 +48,16 @@ junit*.xml
 logs/
 *.pid
 
+# Generated snapshots and media files
+snapshots/
+*.png
+*.jpg
+*.jpeg
+
+# MediaPipe model files (auto-downloaded)
+*.task
+hand_landmarker.task
+
 # Environment variables and local config
 .env
 .env.*
@@ -64,9 +74,8 @@ $RECYCLE.BIN/
 .idea/
 *.iml
 
-/hand_landmarker.task
-/snapshots/snapshot_20260407_112836.png
-/snapshots/snapshot_20260407_112930.png
-/snapshots/snapshot_20260407_113257.png
-/snapshots/snapshot_20260407_113332.png
-/snapshots/snapshot_20260407_114208.png
+# Miscellaneous
+*.bak
+*.tmp
+*.swp
+

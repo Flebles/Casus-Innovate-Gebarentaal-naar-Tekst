@@ -16,7 +16,6 @@ class HandTracker:
         import urllib.request
         import os
 
-        # Download model if not exists
         model_path = "hand_landmarker.task"
         if not os.path.exists(model_path):
             print("Downloading MediaPipe hand landmarker model...")
@@ -37,6 +36,7 @@ class HandTracker:
     def detect_hands(self, frame):
         """Detect hands in frame."""
         from mediapipe import Image, ImageFormat
+
         h, w, _ = frame.shape
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = Image(image_format=ImageFormat.SRGB, data=frame_rgb)
@@ -51,13 +51,11 @@ class HandTracker:
         h, w, _ = frame.shape
 
         for hand_landmarks in results.hand_landmarks:
-            # Draw landmarks
             for landmark in hand_landmarks:
                 x = int(landmark.x * w)
                 y = int(landmark.y * h)
                 cv2.circle(frame, (x, y), 4, (0, 0, 255), -1)
 
-            # Draw connections
             connections = [
                 (0, 1), (1, 2), (2, 3), (3, 4),
                 (0, 5), (5, 6), (6, 7), (7, 8),
@@ -100,20 +98,17 @@ class CameraController:
         self.snapshot_dir = Path(snapshot_dir)
         self.snapshot_dir.mkdir(exist_ok=True)
 
-        # Initialize hand tracker
         self.tracker = HandTracker(
             max_num_hands=max_num_hands,
             min_detection_confidence=min_detection_confidence,
             min_tracking_confidence=min_tracking_confidence
         )
 
-        # Initialize webcam
         self.cap = cv2.VideoCapture(camera_index)
 
         if not self.cap.isOpened():
             raise RuntimeError(f"Cannot open camera with index {camera_index}")
 
-        # Get camera properties
         self.frame_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.frame_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.fps = int(self.cap.get(cv2.CAP_PROP_FPS))
@@ -211,12 +206,6 @@ def main():
     parser = argparse.ArgumentParser(
         description="Webcam Hand Tracker - Sign Language Recognition Demonstrator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python CameraControls.py
-  python CameraControls.py --camera-index 0 --max-num-hands 1
-  python CameraControls.py --min-detection 0.7 --min-tracking 0.6
-        """
     )
 
     parser.add_argument(
