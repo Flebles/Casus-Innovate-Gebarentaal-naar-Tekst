@@ -46,20 +46,43 @@ def save_snapshot(frame, snapshot_dir: str) -> str:
 
 
 def run_camera(args: argparse.Namespace) -> int:
-    import cv2
-    import mediapipe as mp
-
+    # check voor dependencies, voor Noah en Milan
+    try:
+        import cv2
+        import mediapipe as mp
+    except ImportError as e:
+        print("Missing dependency:", e)
+        print("Run: pip install -r requirements.txt")
+        return 1
 
     cap = cv2.VideoCapture(args.camera_index)
     if not cap.isOpened():
         print(f"Could not open camera at index {args.camera_index}.")
         return 1
+    
+    # set resolution, want sommige cameras defaulten op lage resolutie 
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
 
     print("Camera started. Press 'q' to quit, 's' to save a snapshot.")
+
+    # cleanup
+    try:
+        with mp_hands.Hands(
+            max_num_hands=args.max_num_hands,
+            min_detection_confidence=args.min_detection,
+            min_tracking_confidence=args.min_tracking,
+        ) as hands:
+            while True:
+                ...
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
+
     with mp_hands.Hands(
         max_num_hands=args.max_num_hands,
         min_detection_confidence=args.min_detection,
@@ -89,7 +112,11 @@ def run_camera(args: argparse.Namespace) -> int:
                         hand_label = results.multi_handedness[idx].classification[0].label
                         wrist = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST]
                         h, w, _ = frame.shape
-                        x, y = int(wrist.x * w), int(wrist.y * h) - 10
+
+                        # keep text from going off-screen
+                        x = int(wrist.x * w)
+                        y = max(20, int(wrist.y * h) - 10)
+
                         cv2.putText(
                             frame,
                             hand_label,
@@ -116,9 +143,21 @@ def run_camera(args: argparse.Namespace) -> int:
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
+
+            # snapshot feedback on screen
             if key == ord("s"):
                 path = save_snapshot(frame, args.snapshot_dir)
                 print(f"Snapshot saved: {path}")
+                cv2.putText(
+                    frame,
+                    "Snapshot saved!",
+                    (10, 60),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7,
+                    (0, 255, 0),
+                    2,
+                    cv2.LINE_AA,
+                )
 
     cap.release()
     cv2.destroyAllWindows()
