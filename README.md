@@ -1,195 +1,261 @@
-# Webcam Hand Tracker: Sign Language Recognition Demonstrator
-## Gebarentaal naar Tekst (Sign Language to Text)
+# Gebarentaal naar Tekst - Gebaarenherkenning met AI
+## Real-time Hand Gesture Recognition Demonstrator
 
-A real-time hand gesture recognition application using OpenCV and MediaPipe to detect and track hand landmarks in real-time. Built as a demonstrator for Zuyd Hogeschool's Lectorate Data Intelligence to showcase AI applications in gesture and sign language recognition.
+Een real-time toepassing voor handgebaarenherkenning met behulp van OpenCV en MediaPipe die handkernen in real-time detecteert en volgt. Gebouwd als demonstrator voor het Lectorate Data Intelligence van Zuyd Hogeschool om AI-toepassingen in gebaarenherkenning en Nederlandse Gebarentaal (NGT) aan te tonen.
 
-### Project Information
+### Projectinformatie
 
-**Institution:** Zuyd Hogeschool - Lectorate Data Intelligence  
-**Case Group:** TiMMU  
-**Academic Year:** 2025-2026
+**Instelling:** Zuyd Hogeschool - Lectorate Data Intelligence  
+**Casus Groep:** TiMMU  
+**Academisch jaar:** 2025-2026
 
-**Team Members:**
+**Teamleden:**
 - Roy Teheux (2506589)
 - Bram Noortman (2507422)
 - Noah Siemers (2505774)
 - Tim Smeets (2506878)
 - Milan Schoenmakers (2502547)
 
-**Purpose:** Create an accessible, beginner-friendly demonstrator that showcases how AI and computer vision can be applied to recognize and interpret gesture and sign language. Designed for open days and public events at Zuyd Hogeschool.
+**Doel:** Een toegankelijke demonstrator ontwikkelen die aantoont hoe AI en computer vision kunnen worden toegepast om gebaren en gebarentaal te herkennen en interpreteren. Ontworpen voor open dagen en publieke evenementen bij Zuyd Hogeschool.
 
-## Features
+## Functies
 
-- 🎥 Real-time webcam hand tracking
-- 🖐️ Detects up to 2 hands simultaneously (configurable to 1)
-- 📍 Draws 21 hand landmarks and connections per hand
-- 🔄 Smooth real-time processing (~30 FPS)
-- 📸 Capture snapshots with `s` key
-- ⚙️ Highly configurable detection parameters
-- 🎯 Optimized for CPU and GPU processing
-- ❌ Clean exit with `q` key
+- Real-time webcam-handtracking
+- Detecteert tot 2 handen tegelijk (configureerbaar op 1)
+- Toont 21 hand-oriëntatiepunten en verbindingen per hand
+- Soepele real-time verwerking (ongeveer 30 FPS)
+- Snapshot opnemen met toets 's'
+- Zeer configureerbare detectieparameters
+- Geoptimaliseerd voor CPU- en GPU-verwerking
+- Schoon afsluiten met toets 'q'
 
-## Requirements
+## Vereisten
 
-**Minimum:**
+**Minimaal:**
 - Python 3.10+
-- Windows 11 (or Linux/macOS)
+- Windows 11 (of Linux/macOS)
 - 4GB RAM
-- Webcam (minimum 640x480 resolution)
+- Webcam (minimaal 640x480 resolutie)
 
-**Recommended:**
+**Aanbevolen:**
 - Python 3.13+
 - 8GB+ RAM
-- GPU (CUDA-compatible for acceleration)
-- Webcam with 30+ FPS
+- GPU (CUDA-compatibel voor versnelling)
+- Webcam met 30+ FPS
 
-## Installation
+## Installatie
 
-### 1. Clone or download the repository
+### 1. Repository klonen of downloaden
 ```powershell
-cd "C:\Users\[YourUsername]\Documents"
+cd "C:\Users\[JeGebruikersnaam]\Documents"
 git clone [repository-url]
 cd Casus-Innovate-Gebarentaal-naar-Tekst
 ```
 
-### 2. Create virtual environment
+### 2. Virtuele omgeving aanmaken
 ```powershell
 python -m venv .venv
 ```
 
-### 3. Activate virtual environment
+### 3. Virtuele omgeving activeren
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 4. Install dependencies
+### 4. Afhankelijkheden installeren
 ```powershell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-This will automatically download the MediaPipe hand landmarker model on first run.
+Dit zal automatisch het MediaPipe hand landmarker model downloaden bij eerste gebruik.
 
-## Running the Application
+## De Applicatie Uitvoeren
 
-### Basic usage
+### Handgebaarenherkenning (Live Camera)
 ```powershell
-python CameraControls.py
+python main.py
 ```
 
-### With custom options
+### Gebaren Verzamelen (Training data)
 ```powershell
-python CameraControls.py --camera-index 0 --max-num-hands 2 --min-detection 0.6 --min-tracking 0.5 --snapshot-dir snapshots
+python main_collect.py --gesture "1" --samples 50
+python main_collect.py --gesture "2" --samples 50
+python main_collect.py --gesture "3" --samples 50
+python main_collect.py --gesture "4" --samples 50
+python main_collect.py --gesture "5" --samples 50
 ```
 
-## Configuration Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--camera-index` | 0 | Index of the camera to use (0 = default) |
-| `--max-num-hands` | 2 | Maximum number of hands to detect (1-2) |
-| `--min-detection` | 0.5 | Minimum detection confidence (0.0-1.0) |
-| `--min-tracking` | 0.5 | Minimum tracking confidence (0.0-1.0) |
-| `--snapshot-dir` | snapshots | Directory to save snapshots |
-
-## Keyboard Controls
-
-| Key | Action |
-|-----|--------|
-| `s` | Save snapshot of current frame |
-| `q` | Quit application |
-
-## Quick Check
-
+### Model Trainen
 ```powershell
-python CameraControls.py --help
+python main_train.py --dataset data/gestures.csv --model models/ngt_gesture_model.pkl
 ```
 
-## Testing & Documentation
-
-Detailed test results and system validation can be found in:
-- **TEST_RAPPORT.txt** - Comprehensive test report with 10 test cases (100% passing)
-  - Installation validation
-  - Functionality testing
-  - Performance benchmarks
-  - System stability checks
-  - Troubleshooting guide
-
-## Troubleshooting
-
-### No webcam window appears
-- Check Windows camera permissions (Settings > Privacy > Camera)
-- Ensure no other application is using the camera
-- Try a different camera index: `--camera-index 1` or `--camera-index 2`
-
-### Camera not detected as default
-Try specifying a different camera index:
+### Real-time Herkenning
 ```powershell
-python CameraControls.py --camera-index 1
+python main_recognize.py --model models/ngt_gesture_model.pkl --threshold 0.7
 ```
 
-### Low detection accuracy
-- Improve lighting conditions
-- Use a clean, uncluttered background
-- Adjust detection thresholds:
+### Dataset Verifiëren
+```powershell
+python scripts/verify_dataset.py
+```
+
+## Configuratie Opties
+
+| Optie | Standaard | Beschrijving |
+|-------|-----------|-------------|
+| `--camera-index` | 0 | Index van de camera (0 = standaard) |
+| `--max-num-hands` | 2 | Maximaal aantal handen (1-2) |
+| `--min-detection` | 0.5 | Minimale detectiebetrouwbaarheid (0.0-1.0) |
+| `--min-tracking` | 0.5 | Minimale volgbetrouwbaarheid (0.0-1.0) |
+| `--snapshot-dir` | snapshots | Map voor snapshots |
+
+## Toetsenbordbesturing
+
+| Toets | Actie |
+|-------|-------|
+| `c` | Zichtbaarheid van betrouwbaarheid omschakelen |
+| `l` | Markeringslabels omschakelen |
+| `s` | Snapshot van huidiggram opslaan |
+| `q` | Toepassing afsluiten |
+
+## Snelle Test
+
+```powershell
+python main.py --help
+```
+
+## Projectstructuur
+
+```
+Casus-Innovate-Gebarentaal-naar-Tekst/
+├── src/                          # Bronnodules
+│   ├── __init__.py
+│   ├── camera.py                 # Handtracking module (HandTracker, CameraController)
+│   └── gesture.py                # ML modules (GestureDataManager, GestureModelTrainer, GestureClassifier)
+│
+├── scripts/                       # Hulpscripts
+│   ├── verify_dataset.py         # Controleer verzamelde gegevens kwaliteit
+│   └── ngt_demo.py              # NGT-demonstratie (optioneel)
+│
+├── data/                          # Trainingsgegevens
+│   └── gestures.csv              # Geëxtraheerde handmarkeringen
+│
+├── models/                        # Getrainde modellen
+│   └── ngt_gesture_model.pkl     # Getraind RandomForest model
+│
+├── snapshots/                     # Opgeslagen snapshots
+│
+├── main.py                        # Hoofdtoepassing (live camera)
+├── main_collect.py               # Gebaren verzamelen voor training
+├── main_train.py                 # Model trainen
+├── main_recognize.py             # Real-time herkenning
+├── requirements.txt              # Python-afhankelijkheden
+├── README.md                      # Deze file
+└── QUICK_START.md               # Snelstartgids
+```
+
+## Technische Stack
+
+- **Python 3.13** - Programmeertaal
+- **OpenCV 4.8.1.78** - Computer vision bibliotheek voor video verwerking
+- **MediaPipe 0.10.33** - Handdetectie en landmark tracking
+- **NumPy** - Numerieke berekeningen
+- **Scikit-learn** - Machine learning (RandomForest classifier)
+- **Pandas** - Dataverwerking
+- **TensorFlow Lite** - Geoptimaliseerde gevolgtrekking voor real-time verwerking
+
+## Projectachtergrond
+
+Dit project maakt deel uit van het "Casus Innovate" initiatief van het Lectorate Data Intelligence van Zuyd Hogeschool. Het doel is het creëren van een toegankelijke demonstrator die:
+- Aantoont hoe AI en computer vision kunnen worden toegepast op gebaarenherkenning
+- Gebaarentech voor het publiek begrijpelijk maakt
+- Zowel mogelijkheden als beperkingen van huidige AI-technologie demonstreert
+- Dient als educatief hulpmiddel voor open dagen en publieke evenementen
+- Zich richt op Nederlandse Gebarentaal (NGT)
+
+### Onderzoeksbasis
+
+Het project is gebaseerd op uitgebreid onderzoek naar gebaarenherkenning, computer vision en AI/ML frameworks. Belangrijke concepten:
+- **Pose Estimation** voor het extraheren van hand keypoints (21 landmarks per hand)
+- **MediaPipe Solutions** voor real-time hand tracking
+- **Real-time Processing** voor live video-analyse met minimale latentie
+- **Accessibility-first Design** voor inclusieve technologiebemonstring
+
+## Recente Wijzigingen (Update 2026)
+
+### Projectstructuur Gereorganiseerd
+- **Nieuwe modulariteit:** Verplaatst code naar `src/` folder (camera.py, gesture.py)
+- **Splitsen van verantwoordelijkheden:** Gescheiden tracking van ML in verschillende modules
+- **Opgeschoonde imports:** Alle scripts gebruiken nu het nieuwe module systeem
+
+### Gebaarenherkenning Systeem
+- **Dataverzameling:** main_collect.py voor het opslaan van hand landmarks
+- **Model Training:** main_train.py met RandomForest classifier
+- **Real-time Herkenning:** main_recognize.py voor live voorspelling
+- **Dataset Validatie:** scripts/verify_dataset.py voor kwaliteitscontrole
+
+### Gegevensverzameling en Training
+- Ondersteuning voor meertalige gebaren (nummers 1-5, NGT gebaren)
+- Signer-onafhankelijk trainen om het model beter te generaliseren
+- MultiSigner ondersteuning met main_collect_multiuser.py (optioneel)
+
+### Code Kwaliteit
+- Alle emojis verwijderd uit broncode voor professioneel voorkomen
+- Consistent Nederlandse en Engelse commentaar
+- Beter gestructureerde error handling
+
+## Probleemoplossing
+
+### Geen webcam window verschijnt
+- Controleer Windows camera-machtigingen (Instellingen > Privacy > Camera)
+- Zorg dat geen ander programma de camera gebruikt
+- Probeer een ander camera-index: `--camera-index 1` of `--camera-index 2`
+
+### Camera niet gedetecteerd als standaard
+Probeer een ander camera-index op te geven:
+```powershell
+python main.py --camera-index 1
+```
+
+### Lage detectienauwkeurigheid
+- Verbeter de verlichtingscondities
+- Gebruik een schone, rommelige achtergrond
+- Pas detectiedrempels aan:
   ```powershell
-  python CameraControls.py --min-detection 0.7 --min-tracking 0.6
+  python main.py --min-detection 0.7 --min-tracking 0.6
   ```
 
-### Performance issues
-- Reduce hand tracking load: `--max-num-hands 1`
-- Lower detection sensitivity if needed
-- Consider using GPU acceleration
+### Prestatieproblemen
+- Reduceer hand tracking belasting: `--max-num-hands 1`
+- Verlaag detectiegevoeligheid indien nodig
+- Overweeg GPU-versnelling te gebruiken
 
-## Technical Stack
+## Opmerkingen
 
-- **Python 3.13** - Programming language
-- **OpenCV 4.8.1.78** - Computer vision library for video capture and processing
-- **MediaPipe 0.10.33** - Hand detection and landmark tracking
-- **NumPy** - Numerical computations
-- **TensorFlow Lite** - Optimized inference for real-time processing
+- Dit is een demonstratietoepassing ontworpen voor controleerde omgevingen
+- Prestaties kunnen variëren op basis van verlichting, achtergrond en camerakwaliteit
+- De toepassing werkt het beste met stabiele verlichting en ongecompliceerde achtergronden
+- Maximum 2 handen kunnen tegelijk worden gedetecteerd
 
-## Project Background
+## Toekomstige Verbeteringen
 
-This project is part of the "Casus Innovate" initiative at Zuyd Hogeschool's Data Intelligence Lectorate. The goal is to create an accessible demonstrator that:
-- Shows how AI and computer vision can be applied to gesture recognition
-- Makes sign language accessibility technology understandable to the public
-- Demonstrates both capabilities and limitations of current AI technology
-- Serves as an educational tool for open days and public events
-- Focuses on Dutch Sign Language (Nederlandse Gebarentaal - NGT)
+**Fase 2 - Gebaarenherkenning:**
+- Gebaarenclassificatie en patroonherkenning
+- Database van erkende gebaren
+- Real-time tekstuitvoer met betrouwbaarheidsscores
 
-### Research Foundation
+**Fase 3 - Geavanceerde Functies:**
+- Opname- en afspeelfunctionaliteit
+- Ondersteuning voor meertalige gebaarentaal
+- Prestatieoptimalisatie met GPU-versnelling
+- Uitlegfuncties voor educatief doeleinden
 
-The project is built on extensive research into sign language recognition, computer vision, and AI/ML frameworks. Key concepts include:
-- **Pose Estimation** for extracting hand keypoints (21 landmarks per hand)
-- **MediaPipe Solutions** for real-time hand tracking
-- **Real-time Processing** for live video analysis with minimal latency
-- **Accessibility-first Design** for inclusive technology demonstration
+## Licentie
 
-## Notes
-
-- This is a demonstration application designed for controlled environments
-- Performance may vary based on lighting, background, and camera quality
-- The application works best with stable lighting and uncluttered backgrounds
-- Maximum 2 hands can be detected simultaneously
-
-## Future Enhancements
-
-**Phase 2 - Gesture Recognition:**
-- Gesture classification and pattern recognition
-- Database of recognized sign language gestures
-- Real-time text output with confidence scores
-
-**Phase 3 - Advanced Features:**
-- Recording and playback functionality
-- Multi-language sign language support
-- Performance optimization with GPU acceleration
-- Explainability features for educational purposes
-
-## License
-
-Educational project for Zuyd Hogeschool
+Onderwijsproject voor Zuyd Hogeschool
 
 ## Contact
 
-For questions or issues, contact the TiMMU case group team.
+Voor vragen of problemen, neem contact op met het TiMMU case team.

@@ -15,10 +15,10 @@ Pillow>=10.0.0
 # Command Line Interface
 click>=8.1.0
 
-# Optional: Machine Learning Frameworks (for future gesture classification)
-# tensorflow>=2.13.0
-# torch>=2.0.0
-# scikit-learn>=1.3.0
+# Machine Learning and Data Processing
+scikit-learn>=1.3.0
+pandas>=2.0.0
+joblib>=1.3.0
 
 #install line for dependencies
 #pip install -r requirements.txt
