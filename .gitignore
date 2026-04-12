@@ -79,3 +79,5 @@ $RECYCLE.BIN/
 *.tmp
 *.swp
 
+/data/gestures.csv
+/models/ngt_gesture_model.pkl
