@@ -5,6 +5,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 
+# Hand detection and landmark tracking using MediaPipe
 class HandTracker:
 
     def __init__(self, max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5):
@@ -43,20 +44,20 @@ class HandTracker:
 
         from mediapipe import Image, ImageFormat
 
-        h, w, _ = frame.shape
+        # Convert frame to MediaPipe Image format and detect hands
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         mp_image = Image(image_format=ImageFormat.SRGB, data=frame_rgb)
         results = self.landmarker.detect(mp_image)
         return results
 
     def get_hand_count(self, results):
-
+        # Count number of detected hands
         if not results or not results.hand_landmarks:
             return 0
         return len(results.hand_landmarks)
 
     def get_hand_info(self, results, flip_hands=False):
-
+        # Extract hand information (side, confidence, landmarks)
         hand_info = []
         if not results or not results.hand_landmarks or not results.handedness:
             return hand_info
@@ -87,7 +88,7 @@ class HandTracker:
         return hand_info
 
     def extract_landmarks(self, results):
-
+        # Extract x, y, z coordinates and visibility for all hand landmarks
         landmarks_data = []
 
         if not results or not results.hand_landmarks:
@@ -102,7 +103,7 @@ class HandTracker:
         return landmarks_data
 
     def draw_landmarks(self, frame, results, show_labels=False, show_confidence=False):
-
+        # Draw hand landmarks and connections on the frame
         if not results or not results.hand_landmarks or len(results.hand_landmarks) == 0:
             return frame
 
@@ -172,6 +173,7 @@ class HandTracker:
 
 class CameraController:
 
+    # Main camera control class for live hand tracking
     def __init__(self, camera_index=0, max_num_hands=2,
                  min_detection_confidence=0.5, min_tracking_confidence=0.5,
                  snapshot_dir="snapshots"):
@@ -204,13 +206,14 @@ class CameraController:
         print(f"  FPS: {self.fps}")
 
     def save_snapshot(self, frame):
-
+        # Save current frame as PNG with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = self.snapshot_dir / f"snapshot_{timestamp}.png"
         cv2.imwrite(str(filename), frame)
         print(f"Snapshot saved: {filename}")
 
     def add_ui_elements(self, frame, results=None, flip_hands=True):
+        # Add control and status information to the frame
         y_pos = 20
 
         controls_text = "Controls: 'c' confidence | 'l' labels | 's' save | 'q' quit"
@@ -246,6 +249,7 @@ class CameraController:
         return frame
 
     def run(self):
+        # Main loop: capture frames, detect hands, display results
         print("\n" + "="*60)
         print("Webcam Hand Tracker - Sign Language Recognition")
         print("="*60)
@@ -301,4 +305,3 @@ class CameraController:
         self.tracker.release()
         cv2.destroyAllWindows()
         print("Resources released")
-

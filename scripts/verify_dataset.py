@@ -1,15 +1,12 @@
 ﻿#!/usr/bin/env python3
-"""
-Quick verification script to check collected gesture data quality
-"""
 
 import pandas as pd
 import argparse
 from pathlib import Path
 
 
+# Verify and summarize collected gesture dataset
 def verify_dataset(dataset_path: str = "data/gestures.csv"):
-    """Verify and summarize collected gesture data"""
 
     path = Path(dataset_path)
 
@@ -24,13 +21,12 @@ def verify_dataset(dataset_path: str = "data/gestures.csv"):
 
     df = pd.read_csv(dataset_path)
 
-    # Basic stats
+    # Display overall statistics
     print(f"\nOverall Statistics:")
     print(f"  Total samples:     {len(df)}")
     print(f"  Total gestures:    {df['gesture'].nunique()}")
     print(f"  Total columns:     {len(df.columns)}")
 
-    # Per-gesture breakdown
     print(f"\nPer-Gesture Breakdown:")
     gesture_counts = df['gesture'].value_counts().sort_index()
 
@@ -38,10 +34,9 @@ def verify_dataset(dataset_path: str = "data/gestures.csv"):
         status = "OK" if count >= 50 else "LOW"
         print(f"  [{status}] {gesture:15s}: {count:3d} samples")
 
-    # Check for issues
     print(f"\nData Quality Checks:")
 
-    # Check for null values
+    # Check for missing values
     null_cols = df.isnull().sum()
     if null_cols.sum() > 0:
         print(f"  [WARNING] Missing values detected:")
@@ -50,20 +45,19 @@ def verify_dataset(dataset_path: str = "data/gestures.csv"):
     else:
         print(f"  [OK] No missing values")
 
-    # Check column names
+    # Check if gesture column exists
     if 'gesture' in df.columns:
         print(f"  [OK] 'gesture' column present")
     else:
         print(f"  [ERROR] 'gesture' column missing!")
 
-    # Check for expected landmark columns
+    # Check for landmark columns
     landmark_cols = [col for col in df.columns if col.startswith(('x', 'y', 'z', 'visibility'))]
-    if len(landmark_cols) >= 84:  # 21 landmarks * 4 values (x, y, z, visibility) for 1 hand
+    if len(landmark_cols) >= 84:
         print(f"  [OK] Landmark columns: {len(landmark_cols)} found")
     else:
         print(f"  [WARNING] Landmark columns: only {len(landmark_cols)} found (expected ~84+)")
 
-    # Recommendations
     print(f"\nRecommendations:")
 
     min_samples = gesture_counts.min()

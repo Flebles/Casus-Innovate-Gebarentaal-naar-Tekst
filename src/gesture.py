@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
+# Manage gesture training data collection and storage
 class GestureDataManager:
 
     def __init__(self, csv_path: str = "data/gestures.csv"):
@@ -54,6 +55,7 @@ class GestureDataManager:
 
 class GestureModelTrainer:
 
+    # Train machine learning model for gesture classification
     def __init__(self, dataset_path: str = "data/gestures.csv"):
         self.dataset_path = dataset_path
         self.model = None
@@ -62,6 +64,7 @@ class GestureModelTrainer:
         self.metrics = {}
 
     def train(self, test_size: float = 0.2, random_state: int = 42) -> Dict[str, Any]:
+        # Load data, train model, and evaluate performance
         print("Loading dataset...")
         df = pd.read_csv(self.dataset_path)
 
@@ -123,6 +126,7 @@ class GestureModelTrainer:
         return self.metrics
 
     def save_model(self, model_path: str = "models/gesture_model.pkl"):
+        # Save trained model and metadata to pickle file
         if self.model is None:
             raise ValueError("Model not trained. Train model first.")
 
@@ -144,6 +148,7 @@ class GestureModelTrainer:
 
 class GestureClassifier:
 
+    # Load and use trained model for real-time gesture prediction
     def __init__(self, model_path: str = "models/gesture_model.pkl"):
         self.model_path = Path(model_path)
         self.model = None
@@ -155,6 +160,7 @@ class GestureClassifier:
             self.load_model()
 
     def load_model(self):
+        # Load trained model from pickle file
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
 
@@ -169,6 +175,7 @@ class GestureClassifier:
         print(f"Model loaded from: {self.model_path}")
 
     def predict(self, landmarks: list) -> Tuple[str, float]:
+        # Predict gesture class and confidence score
         if self.model is None:
             raise ValueError("No model loaded. Load or train a model first.")
 

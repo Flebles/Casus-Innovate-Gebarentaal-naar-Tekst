@@ -1,20 +1,12 @@
 ﻿#!/usr/bin/env python3
-"""
-Train Gesture Recognition Model
-
-Trains a RandomForest model on collected gesture landmark data.
-
-Usage:
-    python main_train.py --dataset data/gestures.csv --model models/ngt_gesture_model.pkl
-"""
 
 import argparse
 from src.gesture import GestureModelTrainer
 
 
+# Train gesture recognition model
 def train_model(dataset_path: str = "data/gestures.csv", model_path: str = "models/gesture_model.pkl"):
-    """Train gesture recognition model"""
-    
+
     print("\n" + "="*60)
     print("Training Gesture Recognition Model")
     print("="*60)
@@ -25,6 +17,7 @@ def train_model(dataset_path: str = "data/gestures.csv", model_path: str = "mode
     trainer = GestureModelTrainer(dataset_path)
 
     try:
+        # Train the model
         metrics = trainer.train()
         trainer.save_model(model_path)
 

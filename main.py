@@ -3,6 +3,7 @@ from src.camera import CameraController
 
 
 def main():
+    # Parse command line arguments for camera configuration
     parser = argparse.ArgumentParser(
         description="Webcam Hand Tracker - Sign Language Recognition Demonstrator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -46,12 +47,14 @@ def main():
 
     args = parser.parse_args()
 
+    # Validate threshold values
     if not (0.0 <= args.min_detection <= 1.0):
         parser.error("--min-detection must be between 0.0 and 1.0")
 
     if not (0.0 <= args.min_tracking <= 1.0):
         parser.error("--min-tracking must be between 0.0 and 1.0")
 
+    # Initialize and run camera controller
     try:
         controller = CameraController(
             camera_index=args.camera_index,

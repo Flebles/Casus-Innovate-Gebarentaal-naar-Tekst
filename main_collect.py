@@ -1,13 +1,4 @@
 ﻿#!/usr/bin/env python3
-"""
-NGT Gesture Data Collection
-
-Collects hand landmark data for training the gesture recognition model.
-
-Usage:
-    python main_collect.py --gesture "hallo" --samples 50
-    python main_collect.py --gesture "dankje" --samples 50
-"""
 
 import cv2
 import argparse
@@ -15,28 +6,19 @@ from src.camera import HandTracker
 from src.gesture import GestureDataManager
 
 
+# Collect hand landmark data for a specific gesture
 def collect_gesture_data(
     gesture_name: str,
     num_samples: int = 50,
     dataset_path: str = "data/gestures.csv",
     camera_index: int = 0
 ):
-    """
-    Collect hand landmark data for a specific gesture.
-
-    Args:
-        gesture_name: Name of the gesture (e.g., 'hallo')
-        num_samples: Number of samples to collect
-        dataset_path: Path to save the dataset CSV
-        camera_index: Which camera to use (default: 0)
-    """
-
-    # Initialize tracker and data manager
+    # Initialize hand tracker and data manager
     tracker = HandTracker(max_num_hands=2, min_detection_confidence=0.5)
     data_manager = GestureDataManager(dataset_path)
     data_manager.initialize_dataset()
 
-    # Open camera
+    # Open camera feed
     cap = cv2.VideoCapture(camera_index)
 
     if not cap.isOpened():
@@ -56,19 +38,19 @@ def collect_gesture_data(
     recording = False
     sample_count = 0
 
+    # Main collection loop
     while sample_count < num_samples:
         ret, frame = cap.read()
         if not ret:
             print("Error: Failed to read from camera")
             break
 
-        # Mirror the frame
         frame = cv2.flip(frame, 1)
 
-        # Detect hands
+        # Detect hand landmarks in frame
         results = tracker.detect_hands(frame)
 
-        # Draw landmarks
+        # Draw hand landmarks if detected
         if results and results.hand_landmarks:
             frame = tracker.draw_landmarks(
                 frame,
@@ -77,7 +59,6 @@ def collect_gesture_data(
                 show_confidence=True
             )
 
-        # Draw UI text
         status_color = (0, 255, 0) if recording else (100, 100, 100)
         cv2.putText(
             frame,
@@ -110,7 +91,6 @@ def collect_gesture_data(
                 1
             )
 
-        # Show help text
         cv2.putText(
             frame,
             "SPACE=Record | r=Reset | q=Quit",
@@ -123,11 +103,10 @@ def collect_gesture_data(
 
         cv2.imshow("NGT Gesture Collection", frame)
 
-        # Process key press
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord(' '):
-            # Toggle recording
+            # Toggle recording on/off
             recording = not recording
             if recording:
                 print(f"Recording {gesture_name}...")
@@ -135,33 +114,27 @@ def collect_gesture_data(
                 print(f"Paused. Samples: {sample_count}/{num_samples}")
 
         elif key == ord('r'):
-            # Reset counter
             sample_count = 0
             recording = False
             print(f"Reset counter to 0")
 
         elif key == ord('q'):
-            # Quit
             print(f"\nExiting... (collected {sample_count} samples)")
             break
 
-        # Collect sample if recording
         if recording and results and results.hand_landmarks:
+            # Extract and store hand landmarks
             landmarks = tracker.extract_landmarks(results)
 
-            # Flatten landmarks into a list for CSV storage
             flat_landmarks = []
             for hand_data in landmarks:
                 flat_landmarks.extend(hand_data)
 
-            # Pad with zeros if less than 2 hands detected (168 features = 2 hands * 21 landmarks * 4 values)
             while len(flat_landmarks) < 168:
                 flat_landmarks.append(0.0)
 
-            # Trim to exactly 168 features
             flat_landmarks = flat_landmarks[:168]
 
-            # Add sample to dataset
             data_manager.add_gesture_sample(gesture_name, flat_landmarks)
             sample_count += 1
 
@@ -186,14 +159,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Collect 50 samples of "hallo"
-  python main_collect.py --gesture hallo --samples 50
+  Collect 50 samples of "1"
+  python main_collect.py --gesture 1 --samples 50
   
-  # Collect to custom location
-  python main_collect.py --gesture dank_je --samples 50 --dataset data/ngt_data.csv
+  Collect to custom location
+  python main_collect.py --gesture 2 --samples 50 --dataset data/ngt_data.csv
   
-  # Use different camera
-  python main_collect.py --gesture ja --samples 50 --camera 1
+  Use different camera
+  python main_collect.py --gesture 3 --samples 50 --camera 1
         """
     )
 

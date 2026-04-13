@@ -183,7 +183,7 @@ Het project is gebaseerd op uitgebreid onderzoek naar gebaarenherkenning, comput
 - **Real-time Processing** voor live video-analyse met minimale latentie
 - **Accessibility-first Design** voor inclusieve technologiebemonstring
 
-## Recente Wijzigingen (Update 2026)
+## Belangrijkste Verbeteringen Gebracht tijdens de ontwikkeling:
 
 ### Projectstructuur Gereorganiseerd
 - **Nieuwe modulariteit:** Verplaatst code naar `src/` folder (camera.py, gesture.py)

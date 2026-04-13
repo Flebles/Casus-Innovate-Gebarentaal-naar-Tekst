@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 
+# Manage gesture training data collection and storage
 class GestureDataManager:
 
     def __init__(self, csv_path: str = "data/gestures.csv"):
@@ -54,6 +55,7 @@ class GestureDataManager:
 
 class GestureModelTrainer:
 
+    # Train machine learning model for gesture classification
     def __init__(self, dataset_path: str = "data/gestures.csv"):
         self.dataset_path = dataset_path
         self.model = None
@@ -144,6 +146,7 @@ class GestureModelTrainer:
 
 class GestureClassifier:
 
+    # Load and use trained model for real-time gesture prediction
     def __init__(self, model_path: str = "models/gesture_model.pkl"):
         self.model_path = Path(model_path)
         self.model = None
