@@ -28,7 +28,7 @@ def train_model(dataset_path: str = "data/gestures.csv", model_path: str = "mode
         print(f"Precision: {metrics['precision']:.2%}")
         print(f"Recall:    {metrics['recall']:.2%}")
         print(f"F1-Score:  {metrics['f1_score']:.2%}")
-        print(f"\nGestures learned: {', '.join(sorted(metrics['classes']))}")
+        print(f"\nGestures learned: {', '.join(str(cls) for cls in sorted(metrics['classes']))}")
         print(f"Model saved to: {model_path}")
 
     except FileNotFoundError as e:

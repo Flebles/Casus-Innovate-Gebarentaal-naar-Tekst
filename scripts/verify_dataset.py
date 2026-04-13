@@ -32,7 +32,7 @@ def verify_dataset(dataset_path: str = "data/gestures.csv"):
 
     for gesture, count in gesture_counts.items():
         status = "OK" if count >= 50 else "LOW"
-        print(f"  [{status}] {gesture:15s}: {count:3d} samples")
+        print(f"  [{status}] {gesture:15d}: {count:3d} samples")
 
     print(f"\nData Quality Checks:")
 
@@ -95,4 +95,3 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     verify_dataset(args.dataset)
-

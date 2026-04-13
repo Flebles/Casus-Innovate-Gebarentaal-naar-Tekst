@@ -183,8 +183,11 @@ class GestureClassifier:
             print(f"Warning: Expected {len(self.feature_columns)} features, got {len(landmarks)}")
             landmarks = landmarks[:len(self.feature_columns)]
 
-        prediction = self.model.predict([landmarks])[0]
-        confidence = max(self.model.predict_proba([landmarks])[0])
+        # Create DataFrame with feature names to match training data
+        features = pd.DataFrame([landmarks], columns=self.feature_columns)
+
+        prediction = self.model.predict(features)[0]
+        confidence = max(self.model.predict_proba(features)[0])
 
         return prediction, confidence
 
