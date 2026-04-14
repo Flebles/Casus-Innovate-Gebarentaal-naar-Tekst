@@ -1,7 +1,7 @@
-# Gebarentaal naar Tekst - Gebaarenherkenning met AI
+# Gebarentaal naar Tekst - Gebarenherkenning met AI
 ## Real-time Hand Gesture Recognition Demonstrator
 
-Een real-time toepassing voor handgebaarenherkenning met behulp van OpenCV en MediaPipe die handkernen in real-time detecteert en volgt. Gebouwd als demonstrator voor het Lectorate Data Intelligence van Zuyd Hogeschool om AI-toepassingen in gebaarenherkenning en Nederlandse Gebarentaal (NGT) aan te tonen.
+Een real-time toepassing voor handgebaren herkenning met behulp van OpenCV en MediaPipe die hand kernen in real-time detecteert en volgt. Gebouwd als demonstrator voor het Lectorate Data Intelligence van Zuyd Hogeschool om AI-toepassingen in gebarenherkenning en Nederlandse Gebarentaal (NGT) aan te tonen.
 
 ### Projectinformatie
 
@@ -72,18 +72,18 @@ Dit zal automatisch het MediaPipe hand landmarker model downloaden bij eerste ge
 
 ## De Applicatie Uitvoeren
 
-### Handgebaarenherkenning (Live Camera)
+### Handgebaren herkenning (Live Camera)
 ```powershell
 python main.py
 ```
 
 ### Gebaren Verzamelen (Training data)
 ```powershell
-python main_collect.py --gesture "1" --samples 50
-python main_collect.py --gesture "2" --samples 50
-python main_collect.py --gesture "3" --samples 50
-python main_collect.py --gesture "4" --samples 50
-python main_collect.py --gesture "5" --samples 50
+python main_collect.py --gesture "1" --samples 2000
+python main_collect.py --gesture "2" --samples 2000
+python main_collect.py --gesture "3" --samples 2000
+python main_collect.py --gesture "4" --samples 2000
+python main_collect.py --gesture "5" --samples 2000
 ```
 
 ### Model Trainen
@@ -103,22 +103,22 @@ python scripts/verify_dataset.py
 
 ## Configuratie Opties
 
-| Optie | Standaard | Beschrijving |
-|-------|-----------|-------------|
-| `--camera-index` | 0 | Index van de camera (0 = standaard) |
-| `--max-num-hands` | 2 | Maximaal aantal handen (1-2) |
-| `--min-detection` | 0.5 | Minimale detectiebetrouwbaarheid (0.0-1.0) |
-| `--min-tracking` | 0.5 | Minimale volgbetrouwbaarheid (0.0-1.0) |
-| `--snapshot-dir` | snapshots | Map voor snapshots |
+| Optie             | Standaard | Beschrijving                               |
+|-------------------|-----------|--------------------------------------------|
+| `--camera-index`  | 0         | Index van de camera (0 = standaard)        |
+| `--max-num-hands` | 2         | Maximaal aantal handen (1-2)               |
+| `--min-detection` | 0.5       | Minimale detectiebetrouwbaarheid (0.0-1.0) |
+| `--min-tracking`  | 0.5       | Minimale volgbetrouwbaarheid (0.0-1.0)     |
+| `--snapshot-dir`  | snapshots | Map voor snapshots                         |
 
 ## Toetsenbordbesturing
 
-| Toets | Actie |
-|-------|-------|
-| `c` | Zichtbaarheid van betrouwbaarheid omschakelen |
-| `l` | Markeringslabels omschakelen |
-| `s` | Snapshot van huidiggram opslaan |
-| `q` | Toepassing afsluiten |
+| Toets | Actie                                         |
+|-------|-----------------------------------------------|
+| `c`   | Zichtbaarheid van betrouwbaarheid omschakelen |
+| `l`   | Markeringslabels omschakelen                  |
+| `s`   | Snapshot van huidiggram opslaan               |
+| `q`   | Toepassing afsluiten                          |
 
 ## Snelle Test
 
@@ -169,19 +169,19 @@ Casus-Innovate-Gebarentaal-naar-Tekst/
 ## Projectachtergrond
 
 Dit project maakt deel uit van het "Casus Innovate" initiatief van het Lectorate Data Intelligence van Zuyd Hogeschool. Het doel is het creëren van een toegankelijke demonstrator die:
-- Aantoont hoe AI en computer vision kunnen worden toegepast op gebaarenherkenning
-- Gebaarentech voor het publiek begrijpelijk maakt
+- Aantoont hoe AI en computer vision kunnen worden toegepast op gebarenherkenning
+- Gebaren tech voor het publiek begrijpelijk maakt
 - Zowel mogelijkheden als beperkingen van huidige AI-technologie demonstreert
 - Dient als educatief hulpmiddel voor open dagen en publieke evenementen
 - Zich richt op Nederlandse Gebarentaal (NGT)
 
 ### Onderzoeksbasis
 
-Het project is gebaseerd op uitgebreid onderzoek naar gebaarenherkenning, computer vision en AI/ML frameworks. Belangrijke concepten:
+Het project is gebaseerd op uitgebreid onderzoek naar gebarenherkenning, computer vision en AI/ML-frameworks. Belangrijke concepten:
 - **Pose Estimation** voor het extraheren van hand keypoints (21 landmarks per hand)
 - **MediaPipe Solutions** voor real-time hand tracking
 - **Real-time Processing** voor live video-analyse met minimale latentie
-- **Accessibility-first Design** voor inclusieve technologiebemonstring
+- **Accessibility-first Design** voor inclusieve technologie bemonstering
 
 ## Belangrijkste Verbeteringen Gebracht tijdens de ontwikkeling:
 
@@ -190,7 +190,7 @@ Het project is gebaseerd op uitgebreid onderzoek naar gebaarenherkenning, comput
 - **Splitsen van verantwoordelijkheden:** Gescheiden tracking van ML in verschillende modules
 - **Opgeschoonde imports:** Alle scripts gebruiken nu het nieuwe module systeem
 
-### Gebaarenherkenning Systeem
+### Gebaaren herkenning Systeem
 - **Dataverzameling:** main_collect.py voor het opslaan van hand landmarks
 - **Model Training:** main_train.py met RandomForest classifier
 - **Real-time Herkenning:** main_recognize.py voor live voorspelling
@@ -234,20 +234,20 @@ python main.py --camera-index 1
 
 ## Opmerkingen
 
-- Dit is een demonstratietoepassing ontworpen voor controleerde omgevingen
+- Dit is een demonstratie toepassing ontworpen voor controleerde omgevingen
 - Prestaties kunnen variëren op basis van verlichting, achtergrond en camerakwaliteit
 - De toepassing werkt het beste met stabiele verlichting en ongecompliceerde achtergronden
-- Maximum 2 handen kunnen tegelijk worden gedetecteerd
+- Maximaal 2 handen kunnen tegelijk worden gedetecteerd
 
 ## Toekomstige Verbeteringen
 
-**Fase 2 - Gebaarenherkenning:**
-- Gebaarenclassificatie en patroonherkenning
+**Fase 2 - Gebarenherkenning:**
+- Gebarenclassificatie en patroonherkenning
 - Database van erkende gebaren
 - Real-time tekstuitvoer met betrouwbaarheidsscores
 
 **Fase 3 - Geavanceerde Functies:**
 - Opname- en afspeelfunctionaliteit
-- Ondersteuning voor meertalige gebaarentaal
+- Ondersteuning voor meertalige gebarentaal
 - Prestatieoptimalisatie met GPU-versnelling
 - Uitlegfuncties voor educatief doeleinden

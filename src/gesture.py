@@ -66,13 +66,13 @@ class GestureModelTrainer:
     def train(self, test_size: float = 0.2, random_state: int = 42) -> Dict[str, Any]:
         # Load data, train model, and evaluate performance
         print("Loading dataset...")
-        df = pd.read_csv(self.dataset_path)
+        df = pd.read_csv(self.dataset_path, dtype={'gesture': str})
 
         X = df.drop('gesture', axis=1)
-        y = df['gesture']
+        y = df['gesture'].astype(str)
 
         self.feature_columns = X.columns.tolist()
-        self.class_labels = y.unique().tolist()
+        self.class_labels = sorted(y.unique().tolist())
 
         print(f"Dataset loaded: {len(X)} samples, {len(self.class_labels)} classes")
         print(f"Classes: {self.class_labels}")

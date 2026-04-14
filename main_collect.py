@@ -135,7 +135,7 @@ def collect_gesture_data(
 
             flat_landmarks = flat_landmarks[:168]
 
-            data_manager.add_gesture_sample(gesture_name, flat_landmarks)
+            data_manager.add_gesture_sample(str(gesture_name), flat_landmarks)
             sample_count += 1
 
             if sample_count % 10 == 0:
